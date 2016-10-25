@@ -70,11 +70,11 @@ public class Menu : MonoBehaviour {
 			Vector3 secondFinger;
 
 			for (int i = 0; i < graphicsHands.Length; i++) {
-				if (graphicsHands [i].GetHand ().IsLeft && type.Equals(left)) {
+				if (graphicsHands [i].IsLeft() && type.Equals(left)) {
 					firstFinger = graphicsHands [i].fingers [finger_1].GetTipPosition ();
 					secondFinger = graphicsHands [i].fingers [finger_2].GetTipPosition ();
 					hand_l = graphicsHands [i];
-				}else if (graphicsHands [i].GetHand ().IsRight && type.Equals(right)) {
+				}else if (graphicsHands [i].IsRight() && type.Equals(right)) {
 					firstFinger = graphicsHands [i].fingers [finger_1].GetTipPosition ();
 					secondFinger = graphicsHands [i].fingers [finger_2].GetTipPosition ();
 					hand_r = graphicsHands [i];

@@ -34,10 +34,10 @@ public class ChangeSize : MonoBehaviour {
 			Vector3 indexPositionRight;
 
 			for (int i = 0; i < graphicsHands.Length; i++) {
-				if (graphicsHands [i].GetHand ().IsLeft) {
+				if (graphicsHands [i].IsLeft()) {
 					indexPositionLeft = graphicsHands [i].fingers [1].GetTipPosition ();
 				}
-				if (graphicsHands [i].GetHand ().IsRight) {
+				if (graphicsHands [i].IsRight()) {
 					indexPositionRight = graphicsHands [i].fingers [1].GetTipPosition ();
 				}
 			}
@@ -63,10 +63,10 @@ public class ChangeSize : MonoBehaviour {
 			Vector3 IndexPosition;
 
 			for (int i = 0; i < graphicsHands.Length; i++) {
-				if (graphicsHands [i].GetHand ().IsLeft && type.Equals("Left")) {
+				if (graphicsHands [i].IsLeft() && type.Equals("Left")) {
 					ThumbPosition = graphicsHands [i].fingers [0].GetTipPosition();
 					IndexPosition = graphicsHands [i].fingers [1].GetTipPosition();
-				}else if (graphicsHands [i].GetHand ().IsRight && type.Equals("Right")) {
+				}else if (graphicsHands [i].IsRight() && type.Equals("Right")) {
 					ThumbPosition = graphicsHands [i].fingers [0].GetTipPosition();
 					IndexPosition = graphicsHands [i].fingers [1].GetTipPosition();
 				}
@@ -92,10 +92,10 @@ public class ChangeSize : MonoBehaviour {
 			Vector3 IndexPosition;
 
 			for (int i = 0; i < graphicsHands.Length; i++) {
-				if (graphicsHands [i].GetHand ().IsLeft && type.Equals("Left")) {
+				if (graphicsHands [i].IsLeft() && type.Equals("Left")) {
 					ThumbPosition = graphicsHands [i].fingers [0].GetBoneCenter(3);
 					IndexPosition = graphicsHands [i].fingers [1].GetJointPosition(1);
-				}else if (graphicsHands [i].GetHand ().IsRight && type.Equals("Right")) {
+				}else if (graphicsHands [i].IsRight() && type.Equals("Right")) {
 					ThumbPosition = graphicsHands [i].fingers [0].GetBoneCenter(3);
 					IndexPosition = graphicsHands [i].fingers [1].GetJointPosition(1);
 				}
@@ -138,9 +138,9 @@ public class ChangeSize : MonoBehaviour {
 
 	HandModel GetHand(string type){
 		for (int i = 0; i < graphicsHands.Length; i++) {
-			if (graphicsHands [i].GetHand ().IsLeft && type.Equals("Left")) {
+			if (graphicsHands [i].IsLeft() && type.Equals("Left")) {
 				return graphicsHands [i];
-			}else if(graphicsHands [i].GetHand ().IsRight && type.Equals("Right")){
+			}else if(graphicsHands [i].IsRight() && type.Equals("Right")){
 				return graphicsHands [i];
 			}
 		}
