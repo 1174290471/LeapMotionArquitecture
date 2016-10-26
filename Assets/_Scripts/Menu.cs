@@ -15,7 +15,10 @@ public class Menu : MonoBehaviour {
 	private GameObject cube_m;
 	private GameObject sphere_m;
 	private GameObject cylinder_m;
-	private GameObject capsule_m;
+	//Nuevo menu referencia a los objetos
+	private GameObject cube_bkg;
+	private GameObject cube_btn;
+
 	private float distance;
 	private bool isVisible = false;
 
@@ -57,6 +60,11 @@ public class Menu : MonoBehaviour {
 		sphere_m.GetComponent<Renderer> ().enabled = show;
 		cylinder_m = GameObject.Find ("cylinder_m");
 		cylinder_m.GetComponent<Renderer> ().enabled = show;
+		//Nuevo menu a ser probado
+		cube_bkg = GameObject.Find ("CubeButton").transform.GetChild(0).gameObject;
+		cube_btn = GameObject.Find ("CubeButton").transform.GetChild(1).gameObject;
+		cube_bkg.GetComponent<Renderer> ().enabled = show;
+		cube_btn.GetComponent<Renderer> ().enabled = show;
 	}
 
 	float getFingerDistance(string type,int finger_1,int finger_2,float min,float max){
