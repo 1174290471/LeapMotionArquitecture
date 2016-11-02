@@ -12,16 +12,17 @@ public class Menu : MonoBehaviour {
 	private HandModel[] physicsHands;
 	private HandModel hand_l;
 	private HandModel hand_r;
-	private GameObject cube_m;
-	private GameObject sphere_m;
-	private GameObject cylinder_m;
-	//Nuevo menu referencia a los objetos
+
+	//Referencia a los botones del Menu
 	private GameObject cube_bkg;
 	private GameObject cube_btn;
+	private GameObject sphere_bkg;
+	private GameObject sphere_btn;
+	private GameObject cylinder_bkg;
+	private GameObject cylinder_btn;
 
 	private float distance;
 	private bool isVisible = false;
-
 
 	private string left = "LEFT";
 	private string right = "RIGHT";
@@ -54,17 +55,16 @@ public class Menu : MonoBehaviour {
 	}
 
 	void showFingersIcons(bool show){
-		cube_m = GameObject.Find ("cube_m");
-		cube_m.GetComponent<Renderer> ().enabled = show;
-		sphere_m = GameObject.Find ("sphere_m");
-		sphere_m.GetComponent<Renderer> ().enabled = show;
-		cylinder_m = GameObject.Find ("cylinder_m");
-		cylinder_m.GetComponent<Renderer> ().enabled = show;
-		//Nuevo menu a ser probado
-		cube_bkg = GameObject.Find ("CubeButton").transform.GetChild(0).gameObject;
-		cube_btn = GameObject.Find ("CubeButton").transform.GetChild(1).gameObject;
-		cube_bkg.GetComponent<Renderer> ().enabled = show;
-		cube_btn.GetComponent<Renderer> ().enabled = show;
+		fingerIcon (cube_bkg, cube_btn, "cubeButton", show);
+		fingerIcon (sphere_bkg, sphere_btn, "sphereButton", show);
+		fingerIcon (cylinder_bkg, cylinder_btn, "cylinderButton", show);
+	}
+
+	void fingerIcon(GameObject figure_bkg,GameObject figure_btn,string figure_name,bool show){
+		figure_bkg = GameObject.Find (figure_name).transform.GetChild(0).gameObject;
+		figure_btn = GameObject.Find (figure_name).transform.GetChild(1).gameObject;
+		figure_bkg.GetComponent<Renderer> ().enabled = show;
+		figure_btn.GetComponent<Renderer> ().enabled = show;
 	}
 
 	float getFingerDistance(string type,int finger_1,int finger_2,float min,float max){
