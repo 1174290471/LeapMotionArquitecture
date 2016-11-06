@@ -146,17 +146,17 @@ public class Menu : MonoBehaviour {
 		case "cubeButton": 
 			GameObject cube_m = GameObject.CreatePrimitive (PrimitiveType.Cube);
 			cube_m.gameObject.GetComponent<Renderer> ().material.color = Color.blue;
-			cube_m.transform.position = new Vector3 (0, 0, 0);
+			cube_m.transform.position = new Vector3 (0, 5, 0);
 			break;
 		case "sphereButton": 
 			GameObject sphere_m = GameObject.CreatePrimitive (PrimitiveType.Sphere);
 			sphere_m.gameObject.GetComponent<Renderer> ().material.color = Color.green;
-			sphere_m.transform.position = new Vector3 (2, 0, 0);
+			sphere_m.transform.position = new Vector3 (2, 5, 5);
 			break;
 		case "cylinderButton":
 			GameObject cylinder_m = GameObject.CreatePrimitive (PrimitiveType.Cylinder);
 			cylinder_m.gameObject.GetComponent<Renderer> ().material.color = Color.red;
-			cylinder_m.transform.position = new Vector3 (-2, 0, 0);
+			cylinder_m.transform.position = new Vector3 (-2, 5, -5);
 			break;
 		}
 
