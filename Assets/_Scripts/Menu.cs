@@ -5,6 +5,7 @@ using Leap;
 public class Menu : MonoBehaviour {
 	
 	public HandController hand_controller;
+	public GameObject figures_set;
 	public float min_menu;
 	public float max_menu;
 	public float min_btn;
@@ -147,16 +148,19 @@ public class Menu : MonoBehaviour {
 			GameObject cube_m = GameObject.CreatePrimitive (PrimitiveType.Cube);
 			cube_m.gameObject.GetComponent<Renderer> ().material.color = Color.blue;
 			cube_m.transform.position = new Vector3 (5.5f, 3.5f, 0);
+			cube_m.transform.SetParent(figures_set.transform);
 			break;
 		case "sphereButton": 
 			GameObject sphere_m = GameObject.CreatePrimitive (PrimitiveType.Sphere);
 			sphere_m.gameObject.GetComponent<Renderer> ().material.color = Color.green;
 			sphere_m.transform.position = new Vector3 (5.5f, 3.5f, 5);
+			sphere_m.transform.SetParent(figures_set.transform);
 			break;
 		case "cylinderButton":
 			GameObject cylinder_m = GameObject.CreatePrimitive (PrimitiveType.Cylinder);
 			cylinder_m.gameObject.GetComponent<Renderer> ().material.color = Color.red;
 			cylinder_m.transform.position = new Vector3 (5.5f, 3.5f, -5);
+			cylinder_m.transform.SetParent(figures_set.transform);
 			break;
 		}
 

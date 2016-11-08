@@ -91,6 +91,7 @@
      <Compile Include="Assets\_Scripts\ChangeSize.cs" />
      <Compile Include="Assets\_Scripts\CutObject.cs" />
      <Compile Include="Assets\_Scripts\Menu.cs" />
+     <Compile Include="Assets\_Scripts\Move.cs" />
      <None Include="Assets\LeapMotion\Resources\LeapIRUndistorted.shader" />
      <None Include="Assets\Plugins\donotdelete.txt" />
      <None Include="Assets\LeapMotion\Materials\Sources\Shaders\Toony-Basic.shader" />
