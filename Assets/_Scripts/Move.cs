@@ -27,31 +27,35 @@ public class Move : MonoBehaviour {
 	private float distance_object;
 	private Transform[] figures;
 	private bool hold = false;
+	private bool held = false;
 
 	void Start () {
 
 	}
 
 	void Update () {
-		distance = getFingerDistance (right, thumb, index, min_hold, max_hold);
+		holdFigure ();	
+		/*distance = getFingerDistance (right, thumb, index, min_hold, max_hold);
 		if (distance == 0  && hold == false) {
 			Debug.Log ("Join Distance: " + distance);
-			holdFigure ();	
+
 			hold = true;
 		} else if (distance == 1) {
 			Debug.Log ("Join Distance Exit: " + distance);
 			hold = false;
-		}
+		}*/
 	}
 
 	void holdFigure(){
 		figures = figures_set.GetComponentsInChildren<Transform> ();
-		foreach(Transform figure in figures){
-			Debug.Log ("Figures");		
-			distance_object = getObjectDistance(figure.gameObject,right,index,min_object,max_object);
-			if (distance == 0) {
+		Debug.Log ("Length: " + figures.Length);
+		for (int i = 1; i < figures.Length; i++){
+			distance_object = getObjectDistance(figures[i].gameObject,right,index,min_object,max_object);
+			if (distance_object == 0 && held == false) {
+				held = true;
 				Debug.Log ("Holding....");			
-			} else {
+			} else if(distance_object == 1){
+				held = false;
 				Debug.Log ("No Holding....");	
 			}
 		}
@@ -62,7 +66,7 @@ public class Move : MonoBehaviour {
 		graphicsHands = hand_controller.GetAllGraphicsHands ();
 		physicsHands = hand_controller.GetAllPhysicsHands ();
 
-		if (graphicsHands.Length >= 2) {
+		if (graphicsHands.Length >= 1) {
 
 			Vector3 finger;
 			Vector3 figurePosition = figure.transform.position;
@@ -76,7 +80,7 @@ public class Move : MonoBehaviour {
 			}
 				
 			float distance = (finger - figurePosition).magnitude;
-			float normalizedDistance = (distance - min) / (max - min);
+			float normalizedDistance = (distance - min_object) / (max_object - min_object);
 			normalizedDistance = Mathf.Clamp01 (normalizedDistance);
 			return normalizedDistance;
 
@@ -107,7 +111,7 @@ public class Move : MonoBehaviour {
 			}
 
 			float distance = (firstFinger - secondFinger).magnitude;
-			float normalizedDistance = (distance - min) / (max - min);
+			float normalizedDistance = (distance - min_hold) / (max_hold - min_hold);
 			normalizedDistance = Mathf.Clamp01 (normalizedDistance);
 			return normalizedDistance;
 

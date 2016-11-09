@@ -43,15 +43,16 @@ public class Menu : MonoBehaviour {
 	}
 
 	void displayMenu(){
-		distance = getFingerDistance (left, middle, ring, min_menu, max_menu);
-		//Debug.Log ("Menu Distance: " + distance);
-		if (distance == 1) {
-			showFingersIcons (true);
-			isVisible = true;
-			createFigures ();
-		} else if (distance == 0 && isVisible) {
-			showFingersIcons (false);
-			isVisible = false;
+		if (isHand (left)) {
+			distance = getFingerDistance (left, middle, ring, min_menu, max_menu);
+			if (distance == 1) {
+				showFingersIcons (true);
+				isVisible = true;
+				createFigures ();
+			} else if (distance == 0 && isVisible) {
+				showFingersIcons (false);
+				isVisible = false;
+			}
 		}
 	}
 
@@ -133,12 +134,12 @@ public class Menu : MonoBehaviour {
 	void createFigure(string btn){
 		distance_figure_btn = getObjectDistance (btn, right, index, min_btn, max_btn);
 		if (distance_figure_btn == 0 && created == false) {
-			Debug.Log ("Distance " + btn + ": " + distance_figure_btn);
+			//Debug.Log ("Distance " + btn + ": " + distance_figure_btn);
 			created = true;
 			figure (btn);
 		} else if(distance_figure_btn == 1 )  {
 			created = false;
-			Debug.Log("Distance exit " + btn +": " + distance_figure_btn);	
+			//Debug.Log("Distance exit " + btn +": " + distance_figure_btn);	
 		}
 	}
 
@@ -169,5 +170,23 @@ public class Menu : MonoBehaviour {
 		createFigure ("cubeButton");
 		createFigure ("sphereButton");
 		createFigure ("cylinderButton");
+	}
+
+	bool isHand(string hand){
+		
+		graphicsHands = hand_controller.GetAllGraphicsHands ();
+		physicsHands = hand_controller.GetAllPhysicsHands ();
+
+		if (graphicsHands.Length >= 1) {
+			for (int i = 0; i < graphicsHands.Length; i++) {
+				if (graphicsHands [i].IsLeft() && hand.Equals(left)) {
+					return true;
+				}else if(graphicsHands [i].IsRight() && hand.Equals(right)){
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 }
