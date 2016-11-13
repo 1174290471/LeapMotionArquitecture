@@ -24,6 +24,8 @@ public class Menu : MonoBehaviour {
 	private float distance_figure_btn;
 	private bool isVisible = false;
 
+	private GameObject camera;
+
 	private string left = "LEFT";
 	private string right = "RIGHT";
 	private int thumb = 0;
@@ -34,7 +36,7 @@ public class Menu : MonoBehaviour {
 
 
 	void Start () {
-	
+		camera = GameObject.Find ("Main_Camera");
 	}
 
 	void Update () {
@@ -148,20 +150,26 @@ public class Menu : MonoBehaviour {
 		case "cubeButton": 
 			GameObject cube_m = GameObject.CreatePrimitive (PrimitiveType.Cube);
 			cube_m.gameObject.GetComponent<Renderer> ().material.color = Color.blue;
-			cube_m.transform.position = new Vector3 (5.5f, 3.5f, 0);
-			cube_m.transform.SetParent(figures_set.transform);
+			cube_m.transform.position = new Vector3 (5.5f, 3.5f, 5f);
+			cube_m.transform.SetParent (figures_set.transform);
+			camera.transform.position = camera.transform.position + new Vector3 (0f, 0f, 5f);
+			hand_controller.transform.position = hand_controller.transform.position + new Vector3 (0f, 0f, 2f);
 			break;
 		case "sphereButton": 
 			GameObject sphere_m = GameObject.CreatePrimitive (PrimitiveType.Sphere);
 			sphere_m.gameObject.GetComponent<Renderer> ().material.color = Color.green;
-			sphere_m.transform.position = new Vector3 (5.5f, 3.5f, 5);
+			sphere_m.transform.position = new Vector3 (5.5f, 3.5f, 5f);
 			sphere_m.transform.SetParent(figures_set.transform);
+			camera.transform.position = camera.transform.position + new Vector3 (0f, 0f, 5f);
+			hand_controller.transform.position = hand_controller.transform.position + new Vector3 (0f, 0f, 2f);
 			break;
 		case "cylinderButton":
 			GameObject cylinder_m = GameObject.CreatePrimitive (PrimitiveType.Cylinder);
 			cylinder_m.gameObject.GetComponent<Renderer> ().material.color = Color.red;
-			cylinder_m.transform.position = new Vector3 (5.5f, 3.5f, -5);
+			cylinder_m.transform.position = new Vector3 (5.5f, 3.5f, 5f);
 			cylinder_m.transform.SetParent(figures_set.transform);
+			camera.transform.position = camera.transform.position + new Vector3 (0f, 0f, 5f);
+			hand_controller.transform.position = hand_controller.transform.position + new Vector3 (0f, 0f, 2f);
 			break;
 		}
 

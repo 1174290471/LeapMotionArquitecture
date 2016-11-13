@@ -46,6 +46,8 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\LeapMotion\Editor\HandControllerEditor.cs" />
+     <Compile Include="Assets\Package_Cut\Editor\MeshColliderPerMaterial_Editor.cs" />
+     <Compile Include="Assets\Package_Cut\Editor\Trail_MeshEditor.cs" />
      <None Include="Assets\LeapMotion\Resources\LeapIRUndistorted.shader" />
      <None Include="Assets\Plugins\donotdelete.txt" />
      <None Include="Assets\LeapMotion\Materials\Sources\Shaders\Toony-Basic.shader" />
@@ -53,14 +55,20 @@
      <None Include="Assets\LeapMotion\Resources\LeapRGBDistorted.shader" />
      <None Include="Assets\LeapMotion\README_BEFORE_UPDATING.txt" />
      <None Include="Assets\Plugins\x86_64\donotdelete.txt" />
+     <None Include="Assets\Package_Cut\Shaders\Clip_Plane.shader" />
      <None Include="Assets\LeapMotion\Resources\LeapIRUndistorted_foreground.shader" />
      <None Include="Assets\LeapMotion\DemoResources\ScrollerText.txt" />
      <None Include="Assets\LeapMotion\readme.txt" />
+     <None Include="Assets\Package_Cut\Shaders\burnThrough.shader" />
+     <None Include="Assets\Package_Cut\Shaders\DiffuseOultine.shader" />
      <None Include="Assets\LeapMotion\Shaders\RimShading.shader" />
      <None Include="Assets\LeapMotion\Dependencies.txt" />
      <None Include="Assets\LeapMotion\Materials\Sources\Shaders\Toony-BasicOutline.shader" />
+     <None Include="Assets\Package_Cut\Shaders\CelShaded_ShadowDetails.shader" />
+     <None Include="Assets\Package_Cut\Shaders\Portal.shader" />
      <None Include="Assets\LeapMotion\Materials\Sources\Shaders\Toony-LightedOutline.shader" />
      <None Include="Assets\LeapMotion\Materials\Sources\Shaders\Toony-Lighted.shader" />
+     <None Include="Assets\Package_Cut\Shaders\Clip_Radius.shader" />
      <None Include="Assets\LeapMotion\CoreAssetVersion.txt" />
      <None Include="Assets\Plugins\x86\donotdelete.txt" />
      <None Include="Assets\LeapMotion\Resources\LeapRGBUndistorted.shader" />

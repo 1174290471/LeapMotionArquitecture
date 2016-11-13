@@ -1,12 +1,13 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\_Scripts\ChangeSize.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="..\meshTest\Assets\cut.cs">
     <Files>
+      <File FileName="Assets\_Scripts\cut.cs" Line="1" Column="1" />
+      <File FileName="Assets\_Scripts\Move.cs" Line="1" Column="1" />
       <File FileName="Assets\_Scripts\Menu.cs" Line="1" Column="1" />
       <File FileName="Assets\LeapMotion\Scripts\Hands\HandModel.cs" Line="1" Column="1" />
       <File FileName="Assets\_Scripts\ChangeSize.cs" Line="1" Column="1" />
-      <File FileName="Assets\_Scripts\CutObject.cs" Line="1" Column="1" />
-      <File FileName="Assets\_Scripts\Move.cs" Line="1" Column="1" />
+      <File FileName="..\meshTest\Assets\cut.cs" Line="50" Column="42" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
