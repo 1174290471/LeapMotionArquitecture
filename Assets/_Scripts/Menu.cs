@@ -132,7 +132,6 @@ public class Menu : MonoBehaviour {
 		}
 	}
 	void instanceFigure (string figure){
-        Transform[] FiguresCuts;
 
         switch (figure){
 		case "cubeButton": 
@@ -160,6 +159,7 @@ public class Menu : MonoBehaviour {
             break;
 		}
 
+        Transform[] FiguresCuts;
         FiguresCuts = FigureCut.GetComponentsInChildren<Transform>();
         GameObject f = FiguresCuts[1].gameObject;
         Destroy(f, 1);

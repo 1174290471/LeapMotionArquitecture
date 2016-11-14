@@ -5,12 +5,15 @@ public class Cut : MonoBehaviour {
 
     public Material capMaterial;
 	public HandController hand_controller;
-    public GameObject FiguresCut;
+    public GameObject FigureCut;
+    public GameObject FigureSet;
     public float min_Cut;
 	public float max_Cut;
-	
+    public float min_Cut_Done;
+    public float max_Cut_Done;
 
-	private HandModel[] graphicsHands;
+
+    private HandModel[] graphicsHands;
 	private HandModel[] physicsHands;
 
     private float distance;
@@ -35,6 +38,7 @@ public class Cut : MonoBehaviour {
 
 	void Update () {
 		cutFigure ();
+        cutDone();
 	}
 
 	void OnDrawGizmosSelected() {
@@ -73,7 +77,7 @@ public class Cut : MonoBehaviour {
 
 	}
 	void cutting(float distance){
-		figures = FiguresCut.GetComponentsInChildren<Transform> ();
+		figures = FigureCut.GetComponentsInChildren<Transform> ();
 
 		if(figures.Length >= 2 && distance == 0){
 
@@ -125,11 +129,80 @@ public class Cut : MonoBehaviour {
         normalizedDistance = Mathf.Clamp01(normalizedDistance);
         return normalizedDistance;
     }
+    float getFingerDistance(string type, int finger_1, int finger_2, float min, float max)
+    {
+
+        graphicsHands = hand_controller.GetAllGraphicsHands();
+        physicsHands = hand_controller.GetAllPhysicsHands();
+
+        if (graphicsHands.Length >= 1)
+        {
+
+            Vector3 firstFinger = new Vector3(0f, 0f, 0f);
+            Vector3 secondFinger = new Vector3(0f, 0f, 0f);
+
+            for (int i = 0; i < graphicsHands.Length; i++)
+            {
+                if (graphicsHands[i].IsLeft() && type.Equals(left))
+                {
+                    firstFinger = graphicsHands[i].fingers[finger_1].GetTipPosition();
+                    secondFinger = graphicsHands[i].fingers[finger_2].GetTipPosition();
+                }
+                else if (graphicsHands[i].IsRight() && type.Equals(right))
+                {
+                    firstFinger = graphicsHands[i].fingers[finger_1].GetTipPosition();
+                    secondFinger = graphicsHands[i].fingers[finger_2].GetTipPosition();
+                }
+            }
+
+            return normalized(firstFinger, secondFinger, min, max);
+        }
+        return -5.0f;
+    }
+    void cutDone()
+    {
+        GameObject HandControllerCamera = GameObject.Find("HandControllerCamera");
+        float distanceCutDone = getFingerDistance(left,index,thumb,min_Cut_Done,max_Cut_Done);
+        Debug.Log("Distance Done:" + distanceCutDone);
+        if (distanceCutDone == 0 && HandControllerCamera.transform.position.x == 12 && isHand(left))
+        {
+            HandControllerCamera.transform.position = new Vector3(0f, 0f, 0f);
+            Transform[] FiguresCuts = FigureCut.GetComponentsInChildren<Transform>();
+            GameObject f = FiguresCuts[1].gameObject;
+            f.transform.position = FigureSet.transform.position;
+            f.transform.SetParent(FigureSet.transform);
+        }
+    }
+    bool isHand(string hand)
+    {
+
+        graphicsHands = hand_controller.GetAllGraphicsHands();
+        physicsHands = hand_controller.GetAllPhysicsHands();
+
+        if (graphicsHands.Length >= 1)
+        {
+            for (int i = 0; i < graphicsHands.Length; i++)
+            {
+                if (graphicsHands[i].IsLeft() && hand.Equals(left))
+                {
+                    return true;
+                }
+                else if (graphicsHands[i].IsRight() && hand.Equals(right))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+
 
 
     void holdFigure()
     {
-        figures = FiguresCut.GetComponentsInChildren<Transform>();
+        figures = FigureCut.GetComponentsInChildren<Transform>();
         //Debug.Log("Length: " + figures.Length);
         for (int i = 1; i < figures.Length; i++)
         {
