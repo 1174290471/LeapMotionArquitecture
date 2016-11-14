@@ -13,8 +13,6 @@ public class Menu : MonoBehaviour {
 
 	private HandModel[] graphicsHands;
 	private HandModel[] physicsHands;
-	private HandModel hand_l;
-	private HandModel hand_r;
 
 	private GameObject figure_bkg;
 	private GameObject figure_btn;
@@ -24,7 +22,7 @@ public class Menu : MonoBehaviour {
 	private float distance_figure_btn;
 	private bool isVisible = false;
 
-	private GameObject camera;
+	private GameObject camera_main;
 
 	private string left = "LEFT";
 	private string right = "RIGHT";
@@ -36,12 +34,12 @@ public class Menu : MonoBehaviour {
 
 
 	void Start () {
-		camera = GameObject.Find ("Main_Camera");
+		camera_main = GameObject.Find ("Main_Camera");
+        distance = -5f;
 	}
 
 	void Update () {
 		displayMenu ();
-
 	}
 
 	void displayMenu(){
@@ -51,26 +49,23 @@ public class Menu : MonoBehaviour {
 				showFingersIcons (true);
 				isVisible = true;
 				createFigures ();
-			} else if (distance == 0 && isVisible) {
+			} else if (distance == 0 && isVisible == true) {
 				showFingersIcons (false);
 				isVisible = false;
 			}
 		}
 	}
-
 	void showFingersIcons(bool show){
 		fingerIcon ("cubeButton", show);
 		fingerIcon ("sphereButton", show);
 		fingerIcon ("cylinderButton", show);
 	}
-
 	void fingerIcon(string figure_name,bool show){
 		figure_bkg = GameObject.Find (figure_name).transform.GetChild(0).gameObject;
 		figure_btn = GameObject.Find (figure_name).transform.GetChild(1).gameObject;
 		figure_bkg.GetComponent<Renderer> ().enabled = show;
 		figure_btn.GetComponent<Renderer> ().enabled = show;
-	}
-		
+	}		
 	float getFingerDistance(string type,int finger_1,int finger_2,float min,float max){
 
 		graphicsHands = hand_controller.GetAllGraphicsHands ();
@@ -78,30 +73,23 @@ public class Menu : MonoBehaviour {
 
 		if (graphicsHands.Length >= 1) {
 
-			Vector3 firstFinger;
-			Vector3 secondFinger;
+			Vector3 firstFinger = new Vector3(0f,0f,0f);
+			Vector3 secondFinger = new Vector3(0f, 0f, 0f);
 
 			for (int i = 0; i < graphicsHands.Length; i++) {
 				if (graphicsHands [i].IsLeft() && type.Equals(left)) {
 					firstFinger = graphicsHands [i].fingers [finger_1].GetTipPosition ();
 					secondFinger = graphicsHands [i].fingers [finger_2].GetTipPosition ();
-					hand_l = graphicsHands [i];
 				}else if (graphicsHands [i].IsRight() && type.Equals(right)) {
 					firstFinger = graphicsHands [i].fingers [finger_1].GetTipPosition ();
 					secondFinger = graphicsHands [i].fingers [finger_2].GetTipPosition ();
-					hand_r = graphicsHands [i];
 				}
 			}
 
-			float distance = (firstFinger - secondFinger).magnitude;
-			float normalizedDistance = (distance - min) / (max - min);
-			normalizedDistance = Mathf.Clamp01 (normalizedDistance);
-			return normalizedDistance;
-
+            return normalized(firstFinger, secondFinger, min, max);
 		}
 		return -5.0f;
 	}
-
 	float getObjectDistance(string btn, string type1, int finger_1,float min,float max){
 
 		graphicsHands = hand_controller.GetAllGraphicsHands ();
@@ -110,8 +98,8 @@ public class Menu : MonoBehaviour {
 		if (graphicsHands.Length >= 2) {
 
 			figure_btn = findButton (btn);
-			Vector3 finger;
-			Vector3 btnPosition;
+			Vector3 finger = new Vector3(0f,0f,0f);
+			Vector3 btnPosition = figure_btn.transform.position; ;
 
 			for (int i = 0; i < graphicsHands.Length; i++) {
 				if ((graphicsHands [i].IsRight() && type1.Equals(right))) {
@@ -119,67 +107,59 @@ public class Menu : MonoBehaviour {
 				}
 			}
 
-			btnPosition = figure_btn.transform.position;
-			float distance = (finger -  btnPosition).magnitude;
-			float normalizedDistance = (distance - min) / (max - min);
-			normalizedDistance = Mathf.Clamp01 (normalizedDistance);
-			return normalizedDistance;
-
+            return normalized(finger, btnPosition, min, max);
 		}
 		return -5.0f;
-	}
-		
+	}	
 	GameObject findButton(string btn){
 		return GameObject.Find (btn).transform.GetChild(1).gameObject;
 	}
-
-	void createFigure(string btn){
-		distance_figure_btn = getObjectDistance (btn, right, index, min_btn, max_btn);
+    void createFigures()
+    {
+        createFigure("cubeButton");
+        createFigure("sphereButton");
+        createFigure("cylinderButton");
+    }
+    void createFigure(string btn){
+        GameObject HandControllerCamera = GameObject.Find("HandControllerCamera");
+        distance_figure_btn = getObjectDistance (btn, right, index, min_btn, max_btn);
 		if (distance_figure_btn == 0 && created == false) {
-			//Debug.Log ("Distance " + btn + ": " + distance_figure_btn);
-			created = true;
-			figure (btn);
-		} else if(distance_figure_btn == 1 )  {
+            HandControllerCamera.transform.position = new Vector3(12f, 0f, 0f);
+            created = true;
+			instanceFigure (btn);
+		} else if(distance_figure_btn == 1)  {
 			created = false;
-			//Debug.Log("Distance exit " + btn +": " + distance_figure_btn);	
 		}
 	}
-
-	void figure (string figure){
-		switch(figure){
+	void instanceFigure (string figure){
+        GameObject FigureCut = GameObject.Find("Figure_Cut");
+        switch (figure){
 		case "cubeButton": 
 			GameObject cube_m = GameObject.CreatePrimitive (PrimitiveType.Cube);
 			cube_m.gameObject.GetComponent<Renderer> ().material.color = Color.blue;
-			cube_m.transform.position = new Vector3 (5.5f, 3.5f, 5f);
-			cube_m.transform.SetParent (figures_set.transform);
-			camera.transform.position = camera.transform.position + new Vector3 (0f, 0f, 5f);
-			hand_controller.transform.position = hand_controller.transform.position + new Vector3 (0f, 0f, 2f);
+            cube_m.transform.position = FigureCut.transform.position;
+            cube_m.transform.SetParent (figures_set.transform);
+
+            
 			break;
 		case "sphereButton": 
 			GameObject sphere_m = GameObject.CreatePrimitive (PrimitiveType.Sphere);
 			sphere_m.gameObject.GetComponent<Renderer> ().material.color = Color.green;
-			sphere_m.transform.position = new Vector3 (5.5f, 3.5f, 5f);
-			sphere_m.transform.SetParent(figures_set.transform);
-			camera.transform.position = camera.transform.position + new Vector3 (0f, 0f, 5f);
-			hand_controller.transform.position = hand_controller.transform.position + new Vector3 (0f, 0f, 2f);
-			break;
+			sphere_m.transform.position = FigureCut.transform.position;
+            sphere_m.transform.SetParent(figures_set.transform);
+
+            break;
 		case "cylinderButton":
 			GameObject cylinder_m = GameObject.CreatePrimitive (PrimitiveType.Cylinder);
 			cylinder_m.gameObject.GetComponent<Renderer> ().material.color = Color.red;
-			cylinder_m.transform.position = new Vector3 (5.5f, 3.5f, 5f);
-			cylinder_m.transform.SetParent(figures_set.transform);
-			camera.transform.position = camera.transform.position + new Vector3 (0f, 0f, 5f);
-			hand_controller.transform.position = hand_controller.transform.position + new Vector3 (0f, 0f, 2f);
-			break;
+			cylinder_m.transform.position = FigureCut.transform.position;
+            cylinder_m.transform.SetParent(figures_set.transform);
+
+            break;
 		}
 
 	}
-	void createFigures(){
-		createFigure ("cubeButton");
-		createFigure ("sphereButton");
-		createFigure ("cylinderButton");
-	}
-
+	
 	bool isHand(string hand){
 		
 		graphicsHands = hand_controller.GetAllGraphicsHands ();
@@ -196,5 +176,11 @@ public class Menu : MonoBehaviour {
 		}
 
 		return false;
-	}
+	}  
+    float normalized(Vector3 vector_1, Vector3 vectot_2, float min,float max){
+        float distance = (vector_1 - vectot_2).magnitude;
+        float normalizedDistance = (distance - min) / (max - min);
+        normalizedDistance = Mathf.Clamp01(normalizedDistance);
+        return normalizedDistance;
+    }
 }

@@ -144,7 +144,7 @@
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
  </Reference>
  <Reference Include="LeapCSharp.NET3.5">
- <HintPath>C:/Vane/Universidad/Octavo Semestre/Practica Interna/LeapMotionArquitecture/Assets/Plugins/LeapCSharp.NET3.5.dll</HintPath>
+ <HintPath>D:/Unity Projects/LeapMotionArquitecture/Assets/Plugins/LeapCSharp.NET3.5.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
