@@ -5,7 +5,7 @@ using Leap;
 public class Menu : MonoBehaviour {
 	
 	public HandController hand_controller;
-	public GameObject figures_set;
+	public GameObject FigureCut;
 	public float min_menu;
 	public float max_menu;
 	public float min_btn;
@@ -132,33 +132,39 @@ public class Menu : MonoBehaviour {
 		}
 	}
 	void instanceFigure (string figure){
-        GameObject FigureCut = GameObject.Find("Figure_Cut");
+        Transform[] FiguresCuts;
+
         switch (figure){
 		case "cubeButton": 
 			GameObject cube_m = GameObject.CreatePrimitive (PrimitiveType.Cube);
 			cube_m.gameObject.GetComponent<Renderer> ().material.color = Color.blue;
             cube_m.transform.position = FigureCut.transform.position;
-            cube_m.transform.SetParent (figures_set.transform);
+            cube_m.transform.SetParent (FigureCut.transform);
 
             
-			break;
+
+                break;
 		case "sphereButton": 
 			GameObject sphere_m = GameObject.CreatePrimitive (PrimitiveType.Sphere);
 			sphere_m.gameObject.GetComponent<Renderer> ().material.color = Color.green;
 			sphere_m.transform.position = FigureCut.transform.position;
-            sphere_m.transform.SetParent(figures_set.transform);
+            sphere_m.transform.SetParent(FigureCut.transform);
 
             break;
 		case "cylinderButton":
 			GameObject cylinder_m = GameObject.CreatePrimitive (PrimitiveType.Cylinder);
 			cylinder_m.gameObject.GetComponent<Renderer> ().material.color = Color.red;
 			cylinder_m.transform.position = FigureCut.transform.position;
-            cylinder_m.transform.SetParent(figures_set.transform);
+            cylinder_m.transform.SetParent(FigureCut.transform);
 
             break;
 		}
 
-	}
+        FiguresCuts = FigureCut.GetComponentsInChildren<Transform>();
+        GameObject f = FiguresCuts[1].gameObject;
+        Destroy(f, 1);
+
+    }
 	
 	bool isHand(string hand){
 		

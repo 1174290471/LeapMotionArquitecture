@@ -5,7 +5,7 @@ public class Cut : MonoBehaviour {
 
     public Material capMaterial;
 	public HandController hand_controller;
-    public GameObject figures_set;
+    public GameObject FiguresCut;
     public float min_Cut;
 	public float max_Cut;
 	
@@ -73,7 +73,7 @@ public class Cut : MonoBehaviour {
 
 	}
 	void cutting(float distance){
-		figures = figures_set.GetComponentsInChildren<Transform> ();
+		figures = FiguresCut.GetComponentsInChildren<Transform> ();
 
 		if(figures.Length >= 2 && distance == 0){
 
@@ -129,7 +129,7 @@ public class Cut : MonoBehaviour {
 
     void holdFigure()
     {
-        figures = figures_set.GetComponentsInChildren<Transform>();
+        figures = FiguresCut.GetComponentsInChildren<Transform>();
         //Debug.Log("Length: " + figures.Length);
         for (int i = 1; i < figures.Length; i++)
         {
