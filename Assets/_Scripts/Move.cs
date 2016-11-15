@@ -4,18 +4,23 @@ using System.Collections;
 public class Move : MonoBehaviour {
 
 	public HandController hand_controller;
-	public float min_hold;
+    public GameObject Figures_Set;
+    public float min_hold;
 	public float max_hold;
 	public float min_object;
 	public float max_object;
-	public GameObject figures_set;
 
 	private HandModel[] graphicsHands;
 	private HandModel[] physicsHands;
-	private HandModel hand_l;
-	private HandModel hand_r;
 
-	private string left = "LEFT";
+    private float distance;
+    private float distance_object;
+    private Transform[] figures;
+    private bool find = false;
+    private GameObject figure_move = null;
+    private Color figure_move_color = Color.yellow;
+
+    private string left = "LEFT";
 	private string right = "RIGHT";
 	private int thumb = 0;
 	private int index = 1;
@@ -23,100 +28,115 @@ public class Move : MonoBehaviour {
 	private int ring = 3;
 	private int pinky = 4;
 
-	private float distance;
-	private float distance_object;
-	private Transform[] figures;
-	private bool hold = false;
-	private bool held = false;
+
 
 	void Start () {
 
 	}
 
 	void Update () {
-		holdFigure ();	
-		/*distance = getFingerDistance (right, thumb, index, min_hold, max_hold);
-		if (distance == 0  && hold == false) {
-			Debug.Log ("Join Distance: " + distance);
-
-			hold = true;
-		} else if (distance == 1) {
-			Debug.Log ("Join Distance Exit: " + distance);
-			hold = false;
-		}*/
+        getFigureNear();
 	}
 
-	void holdFigure(){
-		figures = figures_set.GetComponentsInChildren<Transform> ();
-		Debug.Log ("Length: " + figures.Length);
-		for (int i = 1; i < figures.Length; i++){
-			distance_object = getObjectDistance(figures[i].gameObject,right,index,min_object,max_object);
-			if (distance_object == 0 && held == false) {
-				held = true;
-				Debug.Log ("Holding....");			
-			} else if(distance_object == 1){
-				held = false;
-				Debug.Log ("No Holding....");	
-			}
-		}
-	}
+    void getFigureNear()
+    {
+        figures = Figures_Set.GetComponentsInChildren<Transform>();
+        for (int i = 1; i < figures.Length; i++)
+        {
 
-	float getObjectDistance(GameObject figure, string type1, int finger_1,float min,float max){
+            distance_object = getObjectDistance(figures[i].gameObject, right, index, min_object, max_object);
+            if (distance_object == 0 && find == false)
+            {
+                Debug.Log("Find: " + figures[i].gameObject.name);
+                find = true;
+                figure_move = figures[i].gameObject;
+                figure_move_color = figure_move.GetComponent<Renderer>().material.color;
+                figure_move.gameObject.GetComponent<Renderer>().material.color = Color.yellow;
+                Debug.Log("Changed Color: " + figures[i].gameObject.name);
+            }
+            else if (distance_object == 1 && figure_move == figures[i].gameObject)
+            {
+                Debug.Log("No Find Nothing");
+                find = false;
+                
+                if (figure_move != null)
+                {
+                    figure_move.gameObject.GetComponent<Renderer>().material.color = figure_move_color;
+                }
 
-		graphicsHands = hand_controller.GetAllGraphicsHands ();
-		physicsHands = hand_controller.GetAllPhysicsHands ();
+                figure_move = null;
+            }
+        }
+    }
+    void colorFigureMove()
+    {
 
-		if (graphicsHands.Length >= 1) {
+    }
+    float normalized(Vector3 vector_1, Vector3 vectot_2, float min, float max)
+    {
+        float distance = (vector_1 - vectot_2).magnitude;
+        float normalizedDistance = (distance - min) / (max - min);
+        normalizedDistance = Mathf.Clamp01(normalizedDistance);
+        return normalizedDistance;
+    }
+    float getFingerDistance(string type, int finger_1, int finger_2, float min, float max)
+    {
 
-			Vector3 finger;
-			Vector3 figurePosition = figure.transform.position;
+        graphicsHands = hand_controller.GetAllGraphicsHands();
+        physicsHands = hand_controller.GetAllPhysicsHands();
 
-			for (int i = 0; i < graphicsHands.Length; i++) {
-				if ((graphicsHands [i].IsRight() && type1.Equals(right))) {
-					finger = graphicsHands [i].fingers [finger_1].GetTipPosition ();
-				}else if((graphicsHands [i].IsLeft() && type1.Equals(left))){
-					finger = graphicsHands [i].fingers [finger_1].GetTipPosition ();
-				}
-			}
-				
-			float distance = (finger - figurePosition).magnitude;
-			float normalizedDistance = (distance - min_object) / (max_object - min_object);
-			normalizedDistance = Mathf.Clamp01 (normalizedDistance);
-			return normalizedDistance;
+        if (graphicsHands.Length >= 1)
+        {
 
-		}
-		return -5.0f;
-	}
+            Vector3 firstFinger = new Vector3(0f, 0f, 0f);
+            Vector3 secondFinger = new Vector3(0f, 0f, 0f);
 
-	float getFingerDistance(string type,int finger_1,int finger_2,float min,float max){
+            for (int i = 0; i < graphicsHands.Length; i++)
+            {
+                if (graphicsHands[i].IsLeft() && type.Equals(left))
+                {
+                    firstFinger = graphicsHands[i].fingers[finger_1].GetTipPosition();
+                    secondFinger = graphicsHands[i].fingers[finger_2].GetTipPosition();
+                }
+                else if (graphicsHands[i].IsRight() && type.Equals(right))
+                {
+                    firstFinger = graphicsHands[i].fingers[finger_1].GetTipPosition();
+                    secondFinger = graphicsHands[i].fingers[finger_2].GetTipPosition();
+                }
+            }
 
-		graphicsHands = hand_controller.GetAllGraphicsHands ();
-		physicsHands = hand_controller.GetAllPhysicsHands ();
+            return normalized(firstFinger, secondFinger, min, max);
+        }
+        return -5.0f;
+    }
+    float getObjectDistance(GameObject figure, string type1, int finger_1, float min, float max)
+    {
 
-		if (graphicsHands.Length >= 1) {
+        graphicsHands = hand_controller.GetAllGraphicsHands();
+        physicsHands = hand_controller.GetAllPhysicsHands();
 
-			Vector3 firstFinger;
-			Vector3 secondFinger;
+        if (graphicsHands.Length >= 1)
+        {
 
-			for (int i = 0; i < graphicsHands.Length; i++) {
-				if (graphicsHands [i].IsLeft() && type.Equals(left)) {
-					firstFinger = graphicsHands [i].fingers [finger_1].GetTipPosition ();
-					secondFinger = graphicsHands [i].fingers [finger_2].GetTipPosition ();
-					hand_l = graphicsHands [i];
-				}else if (graphicsHands [i].IsRight() && type.Equals(right)) {
-					firstFinger = graphicsHands [i].fingers [finger_1].GetTipPosition ();
-					secondFinger = graphicsHands [i].fingers [finger_2].GetTipPosition ();
-					hand_r = graphicsHands [i];
-				}
-			}
+            Vector3 fingerPosition = new Vector3();
+            Vector3 figurePosition = figure.transform.position;
 
-			float distance = (firstFinger - secondFinger).magnitude;
-			float normalizedDistance = (distance - min_hold) / (max_hold - min_hold);
-			normalizedDistance = Mathf.Clamp01 (normalizedDistance);
-			return normalizedDistance;
+            for (int i = 0; i < graphicsHands.Length; i++)
+            {
+                if ((graphicsHands[i].IsRight() && type1.Equals(right)))
+                {
+                    fingerPosition = graphicsHands[i].fingers[finger_1].GetTipPosition();
+                }
+                else if ((graphicsHands[i].IsLeft() && type1.Equals(left)))
+                {
+                    fingerPosition = graphicsHands[i].fingers[finger_1].GetTipPosition();
+                }
+            }
 
-		}
-		return -5.0f;
-	}
+            return normalized(fingerPosition, figurePosition, min_object, max_object);
+
+        }
+        return -5.0f;
+    }
 }
 

@@ -17,7 +17,7 @@ public class Cut : MonoBehaviour {
 	private HandModel[] physicsHands;
 
     private float distance;
-    private Transform[] figures;
+    private Transform[] FiguresCuts;
     private GameObject figure_cut;
 
     private float distance_object;
@@ -77,11 +77,11 @@ public class Cut : MonoBehaviour {
 
 	}
 	void cutting(float distance){
-		figures = FigureCut.GetComponentsInChildren<Transform> ();
+        FiguresCuts = FigureCut.GetComponentsInChildren<Transform> ();
 
-		if(figures.Length >= 2 && distance == 0){
+		if(FiguresCuts.Length >= 2 && distance == 0){
 
-			figure_cut = figures [figures.Length - 1].gameObject;
+			figure_cut = FiguresCuts[FiguresCuts.Length - 1].gameObject;
 			GameObject[] pieces = BLINDED_AM_ME.MeshCut.Cut(figure_cut, transform.position, transform.right, capMaterial);
 			pieces [0].transform.localScale = figure_cut.transform.localScale;
 
@@ -163,7 +163,6 @@ public class Cut : MonoBehaviour {
     {
         GameObject HandControllerCamera = GameObject.Find("HandControllerCamera");
         float distanceCutDone = getFingerDistance(left,index,thumb,min_Cut_Done,max_Cut_Done);
-        Debug.Log("Distance Done:" + distanceCutDone);
         if (distanceCutDone == 0 && HandControllerCamera.transform.position.x == 12 && isHand(left))
         {
             HandControllerCamera.transform.position = new Vector3(0f, 0f, 0f);
@@ -171,8 +170,10 @@ public class Cut : MonoBehaviour {
             GameObject f = FiguresCuts[1].gameObject;
             f.transform.position = FigureSet.transform.position;
             f.transform.SetParent(FigureSet.transform);
+            FiguresCuts = null;
         }
     }
+
     bool isHand(string hand)
     {
 
@@ -196,61 +197,4 @@ public class Cut : MonoBehaviour {
 
         return false;
     }
-
-
-
-
-    void holdFigure()
-    {
-        figures = FigureCut.GetComponentsInChildren<Transform>();
-        //Debug.Log("Length: " + figures.Length);
-        for (int i = 1; i < figures.Length; i++)
-        {
-            distance_object = getObjectDistance(figures[i].gameObject, right, index, 0, 0);
-            if (distance_object == 0 && held == false)
-            {
-                held = true;
-                //Debug.Log("Holding....");
-                figure_cut = figures[i].gameObject;
-            }
-            else if (distance_object == 1)
-            {
-                held = false;
-                //Debug.Log("No Holding....");
-            }
-        }
-    }
-    float getObjectDistance(GameObject figure, string type1, int finger_1, float min, float max)
-    {
-
-        graphicsHands = hand_controller.GetAllGraphicsHands();
-        physicsHands = hand_controller.GetAllPhysicsHands();
-
-        if (graphicsHands.Length >= 1)
-        {
-
-            Vector3 finger = new Vector3(0f, 0f, 0f);
-            Vector3 figurePosition = figure.transform.position;
-
-            for (int i = 0; i < graphicsHands.Length; i++)
-            {
-                if ((graphicsHands[i].IsRight() && type1.Equals(right)))
-                {
-                    finger = graphicsHands[i].fingers[finger_1].GetTipPosition();
-                }
-                else if ((graphicsHands[i].IsLeft() && type1.Equals(left)))
-                {
-                    finger = graphicsHands[i].fingers[finger_1].GetTipPosition();
-                }
-            }
-
-            float distance = (finger - figurePosition).magnitude;
-            float normalizedDistance = (distance - 0) / (0 - 0);
-            normalizedDistance = Mathf.Clamp01(normalizedDistance);
-            return normalizedDistance;
-
-        }
-        return -5.0f;
-    }
-
 }

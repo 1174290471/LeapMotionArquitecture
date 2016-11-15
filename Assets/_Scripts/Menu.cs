@@ -21,8 +21,10 @@ public class Menu : MonoBehaviour {
 	private float distance;
 	private float distance_figure_btn;
 	private bool isVisible = false;
+    private GameObject button_selected;
+    private Transform[] FiguresCuts;
 
-	private GameObject camera_main;
+    private GameObject camera_main;
 
 	private string left = "LEFT";
 	private string right = "RIGHT";
@@ -126,8 +128,9 @@ public class Menu : MonoBehaviour {
 		if (distance_figure_btn == 0 && created == false) {
             HandControllerCamera.transform.position = new Vector3(12f, 0f, 0f);
             created = true;
+            button_selected = GameObject.Find(btn);
 			instanceFigure (btn);
-		} else if(distance_figure_btn == 1)  {
+		} else if(distance_figure_btn == 1 && button_selected == GameObject.Find(btn))  {
 			created = false;
 		}
 	}
@@ -139,31 +142,23 @@ public class Menu : MonoBehaviour {
 			cube_m.gameObject.GetComponent<Renderer> ().material.color = Color.blue;
             cube_m.transform.position = FigureCut.transform.position;
             cube_m.transform.SetParent (FigureCut.transform);
-
             
-
-                break;
+            break;
 		case "sphereButton": 
 			GameObject sphere_m = GameObject.CreatePrimitive (PrimitiveType.Sphere);
 			sphere_m.gameObject.GetComponent<Renderer> ().material.color = Color.green;
 			sphere_m.transform.position = FigureCut.transform.position;
             sphere_m.transform.SetParent(FigureCut.transform);
-
+            
             break;
 		case "cylinderButton":
 			GameObject cylinder_m = GameObject.CreatePrimitive (PrimitiveType.Cylinder);
 			cylinder_m.gameObject.GetComponent<Renderer> ().material.color = Color.red;
 			cylinder_m.transform.position = FigureCut.transform.position;
             cylinder_m.transform.SetParent(FigureCut.transform);
-
+            
             break;
 		}
-
-        Transform[] FiguresCuts;
-        FiguresCuts = FigureCut.GetComponentsInChildren<Transform>();
-        GameObject f = FiguresCuts[1].gameObject;
-        Destroy(f, 1);
-
     }
 	
 	bool isHand(string hand){
