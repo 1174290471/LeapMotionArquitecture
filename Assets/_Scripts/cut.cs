@@ -21,7 +21,7 @@ public class Cut : MonoBehaviour {
     private GameObject figure_cut;
 
     private float distance_object;
-    private bool held = false;
+    private bool cut = false;
 
     private string left = "LEFT";
 	private string right = "RIGHT";
@@ -53,7 +53,6 @@ public class Cut : MonoBehaviour {
 		Gizmos.DrawLine(transform.position,  transform.position + -transform.up * 0.5f);
 
 	}
-	
 
 	void cutFigure(){
 
@@ -68,9 +67,10 @@ public class Cut : MonoBehaviour {
                     transform.position = graphicsHands [i].fingers [index].GetTipPosition ();
                     transform.rotation = graphicsHands [i].GetPalmRotation();
 
-					distance = DistanceThumbIndex (right);
+					//distance = DistanceThumbIndex (right);
+                    distance = getFingerDistance(right, middle, index, min_Cut, max_Cut);
 
-					cutting (distance);
+                    cutting (distance);
 				}
 			}
 		}
@@ -79,7 +79,7 @@ public class Cut : MonoBehaviour {
 	void cutting(float distance){
         FiguresCuts = FigureCut.GetComponentsInChildren<Transform> ();
 
-		if(FiguresCuts.Length >= 2 && distance == 0){
+		if(FiguresCuts.Length >= 2 && distance == 0 && cut == false){
 
 			figure_cut = FiguresCuts[FiguresCuts.Length - 1].gameObject;
 			GameObject[] pieces = BLINDED_AM_ME.MeshCut.Cut(figure_cut, transform.position, transform.right, capMaterial);
@@ -89,7 +89,13 @@ public class Cut : MonoBehaviour {
 				pieces[1].AddComponent<Rigidbody>();
 
 			Destroy(pieces[1], 1);
+
+            cut = true;
 		}
+        else if (distance == 1)
+        {
+            cut = false;
+        }
 
 	}
     float DistanceThumbIndex(string type)

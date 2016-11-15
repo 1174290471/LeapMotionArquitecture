@@ -13,10 +13,10 @@ public class Move : MonoBehaviour {
 	private HandModel[] graphicsHands;
 	private HandModel[] physicsHands;
 
-    private float distance;
     private float distance_object;
     private Transform[] figures;
     private bool find = false;
+    private bool hold = false;
     private GameObject figure_move = null;
     private Color figure_move_color = Color.yellow;
 
@@ -36,6 +36,7 @@ public class Move : MonoBehaviour {
 
 	void Update () {
         getFigureNear();
+        moveFigure();
 	}
 
     void getFigureNear()
@@ -44,7 +45,7 @@ public class Move : MonoBehaviour {
         for (int i = 1; i < figures.Length; i++)
         {
 
-            distance_object = getObjectDistance(figures[i].gameObject, right, index, min_object, max_object);
+            distance_object = getObjectDistance(figures[i].gameObject, right, middle, min_object, max_object);
             if (distance_object == 0 && find == false)
             {
                 Debug.Log("Find: " + figures[i].gameObject.name);
@@ -52,7 +53,7 @@ public class Move : MonoBehaviour {
                 figure_move = figures[i].gameObject;
                 figure_move_color = figure_move.GetComponent<Renderer>().material.color;
                 figure_move.gameObject.GetComponent<Renderer>().material.color = Color.yellow;
-                Debug.Log("Changed Color: " + figures[i].gameObject.name);
+                
             }
             else if (distance_object == 1 && figure_move == figures[i].gameObject)
             {
@@ -68,9 +69,23 @@ public class Move : MonoBehaviour {
             }
         }
     }
-    void colorFigureMove()
-    {
 
+    void moveFigure()
+    {
+        if(figure_move != null && isHand(right))
+        {
+            float distance_to_move = getFingerDistance(right, middle, ring, min_hold, max_hold);
+            if(distance_to_move == 0)
+            {
+                GameObject figure_moving = GameObject.Find("Figure_Moving");
+                figure_move.transform.SetParent(figure_moving.transform);
+            }
+            else if(distance_to_move == 1)
+            {
+                figure_move.transform.SetParent(Figures_Set.transform);
+            }
+            
+        }
     }
     float normalized(Vector3 vector_1, Vector3 vectot_2, float min, float max)
     {
@@ -137,6 +152,29 @@ public class Move : MonoBehaviour {
 
         }
         return -5.0f;
+    }
+    bool isHand(string hand)
+    {
+
+        graphicsHands = hand_controller.GetAllGraphicsHands();
+        physicsHands = hand_controller.GetAllPhysicsHands();
+
+        if (graphicsHands.Length >= 1)
+        {
+            for (int i = 0; i < graphicsHands.Length; i++)
+            {
+                if (graphicsHands[i].IsLeft() && hand.Equals(left))
+                {
+                    return true;
+                }
+                else if (graphicsHands[i].IsRight() && hand.Equals(right))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
 
