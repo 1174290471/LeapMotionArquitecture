@@ -19,9 +19,11 @@ public class Cut : MonoBehaviour {
     private float distance;
     private Transform[] FiguresCuts;
     private GameObject figure_cut;
+    private GameObject handControllerCamera;
+    private bool draw = false;
 
     private float distance_object;
-    private bool cut = false;
+    private bool cut = true;
 
     private string left = "LEFT";
 	private string right = "RIGHT";
@@ -33,12 +35,13 @@ public class Cut : MonoBehaviour {
 	
 
 	void Start () {
-	
-	}
+        handControllerCamera = GameObject.Find("HandControllerCamera");
+    }
 
 	void Update () {
 		cutFigure ();
         cutDone();
+        drawBlade();
 	}
 
 	void OnDrawGizmosSelected() {
@@ -64,10 +67,9 @@ public class Cut : MonoBehaviour {
 			for (int i = 0; i < graphicsHands.Length; i++) {
 				if (graphicsHands [i].IsRight()) {
 
-                    transform.position = graphicsHands [i].fingers [index].GetTipPosition ();
+                    transform.position = graphicsHands [i].fingers [middle].GetTipPosition ();
                     transform.rotation = graphicsHands [i].GetPalmRotation();
 
-					//distance = DistanceThumbIndex (right);
                     distance = getFingerDistance(right, middle, index, min_Cut, max_Cut);
 
                     cutting (distance);
@@ -180,6 +182,20 @@ public class Cut : MonoBehaviour {
         }
     }
 
+    void drawBlade()
+    {
+        if (handControllerCamera.transform.position.x == 12 && isHand(right) && draw == false)
+        {
+            GameObject blade = GameObject.Find("Blade");
+            blade.GetComponent<Renderer>().enabled = true;
+            draw = true;
+        }
+        else if (handControllerCamera.transform.position.x == 0 && isHand(right) && draw == true)
+        {
+            GameObject blade = GameObject.Find("Blade");
+            blade.GetComponent<Renderer>().enabled = false;
+        }
+    }
     bool isHand(string hand)
     {
 

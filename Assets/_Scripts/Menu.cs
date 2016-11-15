@@ -160,7 +160,7 @@ public class Menu : MonoBehaviour {
             break;
 		}
     }
-	
+
 	bool isHand(string hand){
 		
 		graphicsHands = hand_controller.GetAllGraphicsHands ();
