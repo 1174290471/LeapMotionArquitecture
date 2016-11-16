@@ -39,10 +39,13 @@ public class Cut : MonoBehaviour {
     }
 
 	void Update () {
-		cutFigure ();
-        cutDone();
+        if (handControllerCamera.transform.position.x == 12)
+        {
+            cutFigure();
+            cutDone();
+        }
         drawBlade();
-	}
+    }
 
 	void OnDrawGizmosSelected() {
 
@@ -65,12 +68,12 @@ public class Cut : MonoBehaviour {
 		if(graphicsHands.Length >= 1){
 
 			for (int i = 0; i < graphicsHands.Length; i++) {
-				if (graphicsHands [i].IsRight()) {
+				if (graphicsHands [i].IsLeft()) {
 
                     transform.position = graphicsHands [i].fingers [middle].GetTipPosition ();
                     transform.rotation = graphicsHands [i].GetPalmRotation();
 
-                    distance = getFingerDistance(right, middle, index, min_Cut, max_Cut);
+                    distance = getFingerDistance(left, middle, ring, min_Cut, max_Cut);
 
                     cutting (distance);
 				}
@@ -83,9 +86,13 @@ public class Cut : MonoBehaviour {
 
 		if(FiguresCuts.Length >= 2 && distance == 0 && cut == false){
 
-			figure_cut = FiguresCuts[FiguresCuts.Length - 1].gameObject;
-			GameObject[] pieces = BLINDED_AM_ME.MeshCut.Cut(figure_cut, transform.position, transform.right, capMaterial);
-			pieces [0].transform.localScale = figure_cut.transform.localScale;
+            figure_cut = FiguresCuts[FiguresCuts.Length - 1].gameObject;
+
+            Vector3 sideToCut = rightOrLeft(figure_cut);
+
+			GameObject[] pieces = BLINDED_AM_ME.MeshCut.Cut(figure_cut, transform.position, sideToCut, capMaterial);
+
+            pieces [0].transform.localScale = figure_cut.transform.localScale;
 
 			if(!pieces[1].GetComponent<Rigidbody>())
 				pieces[1].AddComponent<Rigidbody>();
@@ -170,31 +177,67 @@ public class Cut : MonoBehaviour {
     void cutDone()
     {
         GameObject HandControllerCamera = GameObject.Find("HandControllerCamera");
-        float distanceCutDone = getFingerDistance(left,index,thumb,min_Cut_Done,max_Cut_Done);
-        if (distanceCutDone == 0 && HandControllerCamera.transform.position.x == 12 && isHand(left))
+        float distanceCutDone = getFingerDistance(right,index,thumb,min_Cut_Done,max_Cut_Done);
+        if (distanceCutDone == 0 && isHand(right))
         {
             HandControllerCamera.transform.position = new Vector3(0f, 0f, 0f);
             Transform[] FiguresCuts = FigureCut.GetComponentsInChildren<Transform>();
-            GameObject f = FiguresCuts[1].gameObject;
-            f.transform.position = FigureSet.transform.position;
-            f.transform.SetParent(FigureSet.transform);
+            if(FiguresCuts.Length >= 2)
+            {
+                GameObject f = FiguresCuts[1].gameObject;
+                f.transform.position = FigureSet.transform.position;
+                f.transform.SetParent(FigureSet.transform);
+            }
             FiguresCuts = null;
         }
     }
 
     void drawBlade()
     {
-        if (handControllerCamera.transform.position.x == 12 && isHand(right) && draw == false)
+        if (handControllerCamera.transform.position.x == 12 && isHand(left) && draw == false)
         {
             GameObject blade = GameObject.Find("Blade");
             blade.GetComponent<Renderer>().enabled = true;
             draw = true;
         }
-        else if (handControllerCamera.transform.position.x == 0 && isHand(right) && draw == true)
+        else if (handControllerCamera.transform.position.x == 0 && isHand(left) && draw == true)
         {
             GameObject blade = GameObject.Find("Blade");
             blade.GetComponent<Renderer>().enabled = false;
+            draw = false;
         }
+    }
+    Vector3 rightOrLeft(GameObject figure_cutting)
+    {
+        if (figure_cutting.transform.position.z < getCurrentPosition(left))
+        {
+            return transform.right;
+        }else
+        {
+            return -transform.right;
+        }
+    }
+    float getCurrentPosition(string hand)
+    {
+        graphicsHands = hand_controller.GetAllGraphicsHands();
+        physicsHands = hand_controller.GetAllPhysicsHands();
+
+        if (graphicsHands.Length >= 1)
+        {
+            for (int i = 0; i < graphicsHands.Length; i++)
+            {
+                if (graphicsHands[i].IsLeft() && hand.Equals(left))
+                {
+                    return graphicsHands[i].fingers[middle].GetTipPosition().z;
+                }
+                else if (graphicsHands[i].IsRight() && hand.Equals(right))
+                {
+                    return graphicsHands[i].fingers[middle].GetTipPosition().z;
+                }
+            }
+        }
+
+        return -5f;
     }
     bool isHand(string hand)
     {

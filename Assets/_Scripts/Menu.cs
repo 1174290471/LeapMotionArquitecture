@@ -23,8 +23,7 @@ public class Menu : MonoBehaviour {
 	private bool isVisible = false;
     private GameObject button_selected;
     private Transform[] FiguresCuts;
-
-    private GameObject camera_main;
+    private GameObject handControllerCamera;
 
 	private string left = "LEFT";
 	private string right = "RIGHT";
@@ -36,12 +35,16 @@ public class Menu : MonoBehaviour {
 
 
 	void Start () {
-		camera_main = GameObject.Find ("Main_Camera");
+        handControllerCamera = GameObject.Find("HandControllerCamera");
         distance = -5f;
 	}
 
 	void Update () {
-		displayMenu ();
+        if(handControllerCamera.transform.position.x == 0)
+        {
+            created = false;
+            displayMenu();
+        }
 	}
 
 	void displayMenu(){
@@ -49,11 +52,11 @@ public class Menu : MonoBehaviour {
 			distance = getFingerDistance (left, middle, ring, min_menu, max_menu);
 			if (distance == 1) {
 				showFingersIcons (true);
-				isVisible = true;
+				//isVisible = true;
 				createFigures ();
-			} else if (distance == 0 && isVisible == true) {
+			} else if (distance == 0) {
 				showFingersIcons (false);
-				isVisible = false;
+				//isVisible = false;
 			}
 		}
 	}
@@ -136,29 +139,32 @@ public class Menu : MonoBehaviour {
 	}
 	void instanceFigure (string figure){
 
-        switch (figure){
-		case "cubeButton": 
-			GameObject cube_m = GameObject.CreatePrimitive (PrimitiveType.Cube);
-			cube_m.gameObject.GetComponent<Renderer> ().material.color = Color.blue;
-            cube_m.transform.position = FigureCut.transform.position;
-            cube_m.transform.SetParent (FigureCut.transform);
-            
-            break;
-		case "sphereButton": 
-			GameObject sphere_m = GameObject.CreatePrimitive (PrimitiveType.Sphere);
-			sphere_m.gameObject.GetComponent<Renderer> ().material.color = Color.green;
-			sphere_m.transform.position = FigureCut.transform.position;
-            sphere_m.transform.SetParent(FigureCut.transform);
-            
-            break;
-		case "cylinderButton":
-			GameObject cylinder_m = GameObject.CreatePrimitive (PrimitiveType.Cylinder);
-			cylinder_m.gameObject.GetComponent<Renderer> ().material.color = Color.red;
-			cylinder_m.transform.position = FigureCut.transform.position;
-            cylinder_m.transform.SetParent(FigureCut.transform);
-            
-            break;
-		}
+        switch (figure)
+        {
+            case "cubeButton":
+                GameObject cube_m = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                cube_m.gameObject.GetComponent<Renderer>().material.color = Color.blue;
+                cube_m.transform.position = FigureCut.transform.position;
+                cube_m.transform.SetParent(FigureCut.transform);
+
+                break;
+            case "sphereButton":
+                GameObject sphere_m = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                sphere_m.gameObject.GetComponent<Renderer>().material.color = Color.green;
+                sphere_m.transform.position = FigureCut.transform.position;
+                sphere_m.transform.SetParent(FigureCut.transform);
+
+                break;
+            case "cylinderButton":
+                GameObject cylinder_m = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                cylinder_m.gameObject.GetComponent<Renderer>().material.color = Color.red;
+                cylinder_m.transform.position = FigureCut.transform.position;
+                cylinder_m.transform.SetParent(FigureCut.transform);
+
+                break;
+        }
+
+        showFingersIcons(false);
     }
 
 	bool isHand(string hand){

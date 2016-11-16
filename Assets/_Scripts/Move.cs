@@ -5,6 +5,7 @@ public class Move : MonoBehaviour {
 
 	public HandController hand_controller;
     public GameObject Figures_Set;
+    public GameObject Figures_Cut;
     public float min_hold;
 	public float max_hold;
 	public float min_object;
@@ -19,6 +20,7 @@ public class Move : MonoBehaviour {
     private bool hold = false;
     private GameObject figure_move = null;
     private Color figure_move_color = Color.yellow;
+    private GameObject handControllerCamera;
 
     private string left = "LEFT";
 	private string right = "RIGHT";
@@ -31,24 +33,31 @@ public class Move : MonoBehaviour {
 
 
 	void Start () {
-
-	}
+        handControllerCamera = GameObject.Find("HandControllerCamera");
+    }
 
 	void Update () {
-        getFigureNear();
-        moveFigure();
-	}
+        if (handControllerCamera.transform.position.x == 0)
+        {
+            getFigureNear(Figures_Set);
+            moveFigure(Figures_Set);
+        }else if (handControllerCamera.transform.position.x == 12)
+        {
+            getFigureNear(Figures_Cut);
+            moveFigure(Figures_Cut);
+        }
+    }
 
-    void getFigureNear()
+    void getFigureNear(GameObject Set)
     {
-        figures = Figures_Set.GetComponentsInChildren<Transform>();
+        figures = Set.GetComponentsInChildren<Transform>();
         for (int i = 1; i < figures.Length; i++)
         {
 
             distance_object = getObjectDistance(figures[i].gameObject, right, middle, min_object, max_object);
             if (distance_object == 0 && find == false)
             {
-                Debug.Log("Find: " + figures[i].gameObject.name);
+                //Debug.Log("Find: " + figures[i].gameObject.name);
                 find = true;
                 figure_move = figures[i].gameObject;
                 figure_move_color = figure_move.GetComponent<Renderer>().material.color;
@@ -57,20 +66,21 @@ public class Move : MonoBehaviour {
             }
             else if (distance_object == 1 && figure_move == figures[i].gameObject)
             {
-                Debug.Log("No Find Nothing");
+               
+                //Debug.Log("No Find Nothing");
                 find = false;
-                
+
                 if (figure_move != null)
                 {
                     figure_move.gameObject.GetComponent<Renderer>().material.color = figure_move_color;
                 }
 
                 figure_move = null;
+                   
             }
         }
     }
-
-    void moveFigure()
+    void moveFigure(GameObject Set)
     {
         if(figure_move != null && isHand(right))
         {
@@ -82,7 +92,7 @@ public class Move : MonoBehaviour {
             }
             else if(distance_to_move == 1)
             {
-                figure_move.transform.SetParent(Figures_Set.transform);
+                figure_move.transform.SetParent(Set.transform);
             }
             
         }
