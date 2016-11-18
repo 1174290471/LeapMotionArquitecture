@@ -10,14 +10,17 @@ public class Move : MonoBehaviour {
 	public float max_hold;
 	public float min_object;
 	public float max_object;
+    public float min_hold_all;
+    public float max_hold_all;
 
-	private HandModel[] graphicsHands;
+    private HandModel[] graphicsHands;
 	private HandModel[] physicsHands;
 
     private float distance_object;
     private Transform[] figures;
     private bool find = false;
     private bool hold = false;
+    private bool moveAll = false;
     private GameObject figure_move = null;
     private Color figure_move_color = Color.yellow;
     private GameObject handControllerCamera;
@@ -29,25 +32,45 @@ public class Move : MonoBehaviour {
 	private int middle = 2;
 	private int ring = 3;
 	private int pinky = 4;
+    private int cut_table = 12;
+    private int desing_table = 0;
 
 
-
-	void Start () {
+    void Start () {
         handControllerCamera = GameObject.Find("HandControllerCamera");
     }
 
 	void Update () {
-        if (handControllerCamera.transform.position.x == 0)
+        if (handControllerCamera.transform.position.x == desing_table)
         {
             getFigureNear(Figures_Set);
             moveFigure(Figures_Set);
-        }else if (handControllerCamera.transform.position.x == 12)
+            moveAllSet();
+        }else if (handControllerCamera.transform.position.x == cut_table)
         {
             getFigureNear(Figures_Cut);
             moveFigure(Figures_Cut);
         }
     }
 
+    void moveAllSet()
+    {
+        if (isHand(right))
+        {
+            float distance_moveAllSet = getDistanceThumbIndex(right);
+            if (distance_moveAllSet == 0 && moveAll == false)
+            {
+                GameObject figure_moving = GameObject.Find("Figure_Moving");
+                Figures_Set.transform.SetParent(figure_moving.transform);
+                moveAll = true;
+            }
+            else if (distance_moveAllSet == 1)
+            {
+                Figures_Set.transform.SetParent(transform);
+                moveAll = false;
+            }
+        }
+    }
     void getFigureNear(GameObject Set)
     {
         figures = Set.GetComponentsInChildren<Transform>();
@@ -162,6 +185,36 @@ public class Move : MonoBehaviour {
 
         }
         return -5.0f;
+    }
+    float getDistanceThumbIndex(string type)
+    {
+
+        graphicsHands = hand_controller.GetAllGraphicsHands();
+        physicsHands = hand_controller.GetAllPhysicsHands();
+
+        if (graphicsHands.Length >= 1)
+        {
+
+            Vector3 ThumbPosition = new Vector3(0f, 0f, 0f);
+            Vector3 IndexPosition = new Vector3(0f, 0f, 0f);
+
+            for (int i = 0; i < graphicsHands.Length; i++)
+            {
+                if (graphicsHands[i].IsLeft() && type.Equals(left))
+                {
+                    ThumbPosition = graphicsHands[i].fingers[0].GetBoneCenter(3);
+                    IndexPosition = graphicsHands[i].fingers[1].GetJointPosition(1);
+                }
+                else if (graphicsHands[i].IsRight() && type.Equals(right))
+                {
+                    ThumbPosition = graphicsHands[i].fingers[0].GetBoneCenter(3);
+                    IndexPosition = graphicsHands[i].fingers[1].GetJointPosition(1);
+                }
+            }
+
+            return normalized(ThumbPosition, IndexPosition, min_hold_all, max_hold_all);
+        }
+        return -1.0f;
     }
     bool isHand(string hand)
     {

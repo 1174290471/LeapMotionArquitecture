@@ -133,6 +133,7 @@
     <Compile Include="Assets\_Scripts\Cut.cs" />
     <Compile Include="Assets\_Scripts\Menu.cs" />
     <Compile Include="Assets\_Scripts\Move.cs" />
+    <Compile Include="Assets\_Scripts\Size.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\LeapMotion\CoreAssetVersion.txt" />

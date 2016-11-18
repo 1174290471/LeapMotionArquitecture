@@ -32,14 +32,15 @@ public class Cut : MonoBehaviour {
 	private int middle = 2;
 	private int ring = 3;
 	private int pinky = 4;
-	
+    private int cut_table = 12;
+    private int desing_table = 0;
 
-	void Start () {
+    void Start () {
         handControllerCamera = GameObject.Find("HandControllerCamera");
     }
 
 	void Update () {
-        if (handControllerCamera.transform.position.x == 12)
+        if (handControllerCamera.transform.position.x == cut_table && isHand(left))
         {
             cutFigure();
             cutDone();
@@ -107,36 +108,6 @@ public class Cut : MonoBehaviour {
         }
 
 	}
-    float DistanceThumbIndex(string type)
-    {
-
-        graphicsHands = hand_controller.GetAllGraphicsHands();
-        physicsHands = hand_controller.GetAllPhysicsHands();
-
-        if (graphicsHands.Length >= 1)
-        {
-
-            Vector3 ThumbPosition = new Vector3(0f, 0f, 0f);
-            Vector3 IndexPosition = new Vector3(0f, 0f, 0f);
-
-            for (int i = 0; i < graphicsHands.Length; i++)
-            {
-                if (graphicsHands[i].IsLeft() && type.Equals(left))
-                {
-                    ThumbPosition = graphicsHands[i].fingers[0].GetBoneCenter(3);
-                    IndexPosition = graphicsHands[i].fingers[1].GetJointPosition(1);
-                }
-                else if (graphicsHands[i].IsRight() && type.Equals(right))
-                {
-                    ThumbPosition = graphicsHands[i].fingers[0].GetBoneCenter(3);
-                    IndexPosition = graphicsHands[i].fingers[1].GetJointPosition(1);
-                }
-            }
-
-            return normalized(ThumbPosition, IndexPosition, min_Cut, max_Cut);
-        }
-        return -1.0f;
-    }
     float normalized(Vector3 vector_1, Vector3 vectot_2, float min, float max)
     {
         float distance = (vector_1 - vectot_2).magnitude;
@@ -177,18 +148,21 @@ public class Cut : MonoBehaviour {
     void cutDone()
     {
         GameObject HandControllerCamera = GameObject.Find("HandControllerCamera");
-        float distanceCutDone = getFingerDistance(right,index,thumb,min_Cut_Done,max_Cut_Done);
-        if (distanceCutDone == 0 && isHand(right))
+        if (isHand(left))
         {
-            HandControllerCamera.transform.position = new Vector3(0f, 0f, 0f);
-            Transform[] FiguresCuts = FigureCut.GetComponentsInChildren<Transform>();
-            if(FiguresCuts.Length >= 2)
+            float distanceCutDone = getFingerDistance(left, index, thumb, min_Cut_Done, max_Cut_Done);
+            if (distanceCutDone == 0)
             {
-                GameObject f = FiguresCuts[1].gameObject;
-                f.transform.position = FigureSet.transform.position;
-                f.transform.SetParent(FigureSet.transform);
+                HandControllerCamera.transform.position = new Vector3(0f, 0f, 0f);
+                Transform[] FiguresCuts = FigureCut.GetComponentsInChildren<Transform>();
+                if (FiguresCuts.Length >= 2)
+                {
+                    GameObject f = FiguresCuts[1].gameObject;
+                    f.transform.position = new Vector3(-5f,3f,-2f);
+                    f.transform.SetParent(FigureSet.transform);
+                }
+                FiguresCuts = null;
             }
-            FiguresCuts = null;
         }
     }
 

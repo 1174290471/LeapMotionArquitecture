@@ -32,15 +32,16 @@ public class Menu : MonoBehaviour {
 	private int middle = 2;
 	private int ring = 3;
 	private int pinky = 4;
+    private int cut_table = 12;
+    private int desing_table = 0;
 
-
-	void Start () {
+    void Start () {
         handControllerCamera = GameObject.Find("HandControllerCamera");
         distance = -5f;
 	}
 
 	void Update () {
-        if(handControllerCamera.transform.position.x == 0)
+        if(handControllerCamera.transform.position.x == desing_table)
         {
             created = false;
             displayMenu();
